@@ -1,0 +1,4 @@
+{
+    "name" : "recommend algorithm",
+    "desc" : "Constructing a recommendation algorithm using only JavaScript, without using deep learning, machine learning, elastic search"
+}

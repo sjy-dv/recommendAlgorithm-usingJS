@@ -67,22 +67,47 @@ app.get("/myalgorithm", async (req, res) => {
       count[k] = (count[k] || 0) + 1;
     });
 
-    let compareCount = 0;
-    let compareKey = "";
+    let compareCount = [];
+    let compareKey = [];
     for (key in count) {
-      //더 큰 중복값이 나오면 바꿔줌
-      if (count[key] > compareCount) {
-        compareKey = key;
+      compareKey.push(key);
+      compareCount.push(count[key]);
+    }
+
+    let tempKey = "";
+    let tempCount = 0;
+    for (let i = 0; i < compareKey.length; i++) {
+      if (compareCount[i] < compareCount[i + 1]) {
+        tempKey = compareKey[i];
+        tempCount = compareCount[i];
+        compareKey[i] = compareKey[i + 1];
+        compareCount[i] = compareCount[i + 1];
+        compareKey[i + 1] = tempKey;
+        compareCount[i + 1] = tempCount;
       }
     }
+
     let recommend = [];
-    for (let i = 0; i < temp_data.length; i++) {
-      if (compareKey === temp_data[i].genre) {
-        recommend.push(temp_data[i]);
+    let k = 0;
+    console.log(compareKey);
+    while (k < compareKey.length) {
+      for (let i = 0; i < temp_data.length; i++) {
+        if (compareKey[k] === temp_data[i].genre) {
+          recommend.push(temp_data[i]);
+        }
       }
+      k = k + 1;
     }
-    res.status(200).json({ result: recommend });
-  } catch (error) {}
+
+    //if you want to show 10 recommends results
+    while (recommend.length > 10) {
+      recommend.pop();
+    }
+    console.log(recommend.length);
+    return res.status(200).json({ result: recommend });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 app.listen(8081);
